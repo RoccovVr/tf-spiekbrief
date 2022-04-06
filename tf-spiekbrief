@@ -1,0 +1,88 @@
+import numpy as np
+import pandas as pd
+from random import randint
+from sklearn.utils import shuffle
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Activation, Dense
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.metrics import categorical_crossentropy
+
+# example of model
+model = Sequential([
+    Dense(units = 16, activation = 'relu'),
+    Dense(units = 32, activation = 'relu'),
+    Dense(units = 2, activation = 'softmax')
+])
+#softmax gives probabilities of each of the two units
+
+model.compile(optimizer = Adam(learning_rate = 0.0001), loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
+
+model.fit(x = X_train, y = y_train, batch_size = 10, epochs = 30, verbose = 2) 
+
+#or for images, also see cell below, and note that train_batches contains the labels,
+model.fit(x = train_batches, validation_data = valid_batches, epochs = 10, verbose = 2)
+
+#making compatible batches for images
+train_batches = ImageDataGenerator(preprocessing_function = tf.keras.applications.vgg16.preprocess_input)\
+.flow_from_directory(directory = train_path, target_size=(224,224), classes = ['cat', 'dog'], batch_size = 10)
+
+validation_batches = ImageDataGenerator(preprocessing_function = tf.keras.applications.vgg16.preprocess_input)\
+.flow_from_directory(directory = validation_path, target_size=(224,224), classes = ['cat', 'dog'], batch_size = 10)
+
+test_batches = ImageDataGenerator(preprocessing_function = tf.keras.applications.vgg16.preprocess_input)\
+.flow_from_directory(directory = test_path, target_size=(224,224), classes = ['cat', 'dog'], batch_size = 10, shuffle = False)
+
+#target_size refers to size of image
+
+#model for images
+model = Sequential([Conv2D(filters = 32, kernel_size = (3,3), activation = 'relu', padding = 'same',\
+                           input_shape = (224,224,3)),
+                   MaxPool2D(pool_size=(2,2), strides = 2),
+                   Conv2D(filters = 64, kernel_size = (3,3), activation = 'relu', padding = 'same'),
+                   MaxPool2D(pool_size=(2,2), strides = 2),
+                   Flatten(),
+                   Dense(units = 2, activation = 'softmax'),])
+#padding same means no dimred on image, 3 in input_shape refers to rgb
+#Flatten is to make the data 1D
+
+# fine-tuning (adjusting) models:
+model_old = tf.keras.applications.vvg16.VGG16() #for example
+
+model_new = Sequential()
+for layer in model_old.layers[:-1]: #in this example all but the last layer
+    model_new.add(layers)
+
+for layer in model.layers:
+    layer.trainable = False #freeze the already trained layers, cz no more training required
+    
+model_new.add(Dense(units = 2, activation = 'softmax'))
+
+#fine-tuning mobile model (see below what mobile is):
+mobile = tf.keras.applications.mobilenet.MobileNet()
+x = mobile.layers[-2].output #(-2 is just example)
+output = Dense(units = 10, activation = 'softmax')(x)
+new_model = Model(inputs = mobile.input, outputs = output)
+
+for layer in new_model.layers[:-23]:
+    layer.trainable = False
+    
+#mobile, is smaller size but bit lower accuracy
+mobile = tf.keras.applications.mobilenet.MobileNet() #kind of model
+
+def prepare_image(file): #compare prep function in ImageDataGenerator
+    img_path = 'data/MobileNet-samples/'
+    img = image.load_img(img_path + file, target_size = (224,224))
+    img_array = image.img_to_array(img)
+    img_array_expanded_dims = np.expand_dims(img_array, axis=0)
+    return tf.keras.applications.mobilenet.preprocess_input(img_array_expanded_dims)
+
+preprocessed_image = prepare_image('plaatje.png')
+predictions = mobile.predict(preprocessed_image)
+results = imagenet_utils.decode_predictions(predictions) #printing results yields top 5 of best predictions
+
+
