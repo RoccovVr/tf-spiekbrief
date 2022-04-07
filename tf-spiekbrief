@@ -55,7 +55,7 @@ model_old = tf.keras.applications.vvg16.VGG16() #for example
 
 model_new = Sequential()
 for layer in model_old.layers[:-1]: #in this example all but the last layer
-    model_new.add(layers)
+    model_new.add(layer)
 
 for layer in model.layers:
     layer.trainable = False #freeze the already trained layers, cz no more training required
