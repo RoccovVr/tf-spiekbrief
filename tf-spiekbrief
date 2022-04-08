@@ -27,6 +27,9 @@ model.fit(x = X_train, y = y_train, batch_size = 10, epochs = 30, verbose = 2)
 #or for images, also see cell below, and note that train_batches contains the labels,
 model.fit(x = train_batches, validation_data = valid_batches, epochs = 10, verbose = 2)
 
+#seeing history of what happened at the train data:
+model.fit(...).history
+
 #making compatible batches for images
 train_batches = ImageDataGenerator(preprocessing_function = tf.keras.applications.vgg16.preprocess_input)\
 .flow_from_directory(directory = train_path, target_size=(224,224), classes = ['cat', 'dog'], batch_size = 10)
