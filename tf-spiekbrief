@@ -30,6 +30,9 @@ model.fit(x = train_batches, validation_data = valid_batches, epochs = 10, verbo
 #seeing history of what happened at the train data:
 model.fit(...).history
 
+#test scores:
+score = model.evaluate(X_test / 255., y_test, verbose=0)
+
 #making compatible batches for images
 train_batches = ImageDataGenerator(preprocessing_function = tf.keras.applications.vgg16.preprocess_input)\
 .flow_from_directory(directory = train_path, target_size=(224,224), classes = ['cat', 'dog'], batch_size = 10)
