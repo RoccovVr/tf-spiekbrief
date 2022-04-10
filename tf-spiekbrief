@@ -14,11 +14,14 @@ from tensorflow.keras.metrics import categorical_crossentropy
 
 # example of model
 model = Sequential([
+    Flatten(),
     Dense(units = 16, activation = 'relu'),
     Dense(units = 32, activation = 'relu'),
     Dense(units = 2, activation = 'softmax')
 ])
 #softmax gives probabilities of each of the two units
+
+#can also be done by model.add, see below
 
 model.compile(optimizer = Adam(learning_rate = 0.0001), loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
 
@@ -28,7 +31,7 @@ model.fit(x = X_train, y = y_train, batch_size = 10, epochs = 30, verbose = 2)
 model.fit(x = train_batches, validation_data = valid_batches, epochs = 10, verbose = 2)
 
 #seeing history of what happened at the train data:
-model.fit(...).history #(is dictonary), or
+model.fit(...).history #(is dict) or
 history = model.fit(...) 
 
 #test scores:
