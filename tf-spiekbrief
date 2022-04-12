@@ -95,5 +95,8 @@ preprocessed_image = prepare_image('plaatje.png')
 predictions = mobile.predict(preprocessed_image)
 results = imagenet_utils.decode_predictions(predictions) #printing results yields top 5 of best predictions
 
-#customizing layers:
-#extend tf.keras.layers.Layer in your own class and use call(), build() and __init__() in that class
+#customized layers
+
+#customizing: extend tf.keras.layers.Layer in your own class and use call(), build() and __init__() in that class
+#applying customized layers, then don't use 'relu', but tf.nn.relu, same for softmax, and in general 
+#use tf.keras instead of just keras.
