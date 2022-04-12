@@ -83,7 +83,7 @@ model_new.add(Dense(units = 2, activation = 'softmax'))
 #fine-tuning mobile model (see below what mobile is):
 mobile = tf.keras.applications.mobilenet.MobileNet()
 x = mobile.layers[-2].output #(-2 is just example)
-output = Dense(units = 10, activation = 'softmax')(x)
+output = Dense(units = 10, activation = 'softmax')(x) #it's not sequential, so the output syntax is different
 new_model = Model(inputs = mobile.input, outputs = output)
 
 for layer in new_model.layers[:-23]:
