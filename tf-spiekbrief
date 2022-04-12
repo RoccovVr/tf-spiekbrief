@@ -12,6 +12,14 @@ from tensorflow.keras.layers import Activation, Dense
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.metrics import categorical_crossentropy
 
+#preprocessing steps for NNs:
+
+#reshape inputs
+
+#convert class vectors to binary class matrices
+y_train = keras.utils.np_utils.to_categorical(y_train)
+y_test = keras.utils.np_utils.to_categorical(y_test)
+
 # example of model
 model = Sequential([
     Flatten(),
